@@ -19,5 +19,6 @@ from accounts.views import *
 
 urlpatterns = [
     path("", home, name="home"),
-    path("loginSignup", loginSignup, name="loginSignup")
+    path("loginSignup", loginSignup, name="loginSignup"),
+    path("upload", upload, name="upload"),
 ]
