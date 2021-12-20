@@ -21,4 +21,5 @@ urlpatterns = [
     path("", home, name="home"),
     path("loginSignup", loginSignup, name="loginSignup"),
     path("upload", upload, name="upload"),
+    path("logout", accountLogout, name="logout"),
 ]
