@@ -1,9 +1,19 @@
+import uuid
+import os
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+
 from .managers import CustomUserManager
+
+
+def rename_file_upload(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+
+    return os.path.join('images/', filename)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -20,3 +30,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Uploads(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
+    file = models.ImageField(upload_to=rename_file_upload, blank=False)
+
+    def __str__(self):
+        return self.account.email

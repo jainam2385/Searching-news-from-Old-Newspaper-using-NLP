@@ -1,12 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User
+from .models import User, Uploads
 
 
 class CustomUserAdmin(UserAdmin):
-    # add_form = CustomUserCreationForm
-    # form = CustomUserChangeForm
     model = User
 
     list_display = ('email', 'is_staff', 'is_active',
@@ -31,4 +29,16 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
+class UploadsAdmin(admin.ModelAdmin):
+    model = Uploads
+
+    list_display = ('user', 'file')
+
+    list_filter = ('user', )
+
+    search_fields = ('user',)
+    ordering = ('user',)
+
+
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(Uploads, UploadsAdmin)

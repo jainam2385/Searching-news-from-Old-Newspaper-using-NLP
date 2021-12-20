@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -6,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from accounts.models import User
-from accounts.forms import UserForm
+from accounts.forms import UserForm, UploadsForm
 
 # Create your views here.
 
@@ -66,7 +67,14 @@ def loginSignup(request):
 @login_required
 def upload(request):
     if request.method == "POST":
-        print(request.POST)
+        upload = UploadsForm({"user": request.user}, request.FILES)
+
+        if upload.is_valid():
+            upload.save()
+
+        return HttpResponse(json.dumps({
+            "success": True
+        }))
 
     return render(request, "upload.html")
 

@@ -1,3 +1,5 @@
+{% load static %}
+
 :root {
     --main-bg-color: #edf5fe;
     --light-blue: #03a9f4;
@@ -28,7 +30,7 @@ body {
 .image-vector {
     width: 50vw;
     height: 50vh;
-    background: url("static/images/undraw-upload.svg") no-repeat center;
+    background: url("{% static 'images/undraw-upload.svg' %}") no-repeat center;
     background-size: contain;
 }
 
@@ -282,5 +284,79 @@ body {
     }
     .email-container .filed {
         width: 300px;
+    }
+}
+
+.checkmark {
+    width: 200px;
+    margin: 0 auto;
+    padding-top: 40px;
+}
+
+.path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+    animation: dash 2s ease-in-out;
+    -webkit-animation: dash 2s ease-in-out;
+}
+
+.spin {
+    animation: spin 2s;
+    -webkit-animation: spin 2s;
+    transform-origin: 50% 50%;
+    -webkit-transform-origin: 50% 50%;
+}
+
+@-webkit-keyframes dash {
+    0% {
+        stroke-dashoffset: 1000;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dashoffset: 1000;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes text {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes text {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
     }
 }
