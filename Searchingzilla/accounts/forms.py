@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import User, Uploads
+from .models import User, Uploads, NewsRecord
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -58,3 +58,11 @@ class UploadsForm(forms.ModelForm):
     class Meta:
         model = Uploads
         fields = ('user', 'file', )
+
+
+class NewsRecordForm(forms.ModelForm):
+
+    class Meta:
+        model = NewsRecord
+        fields = ('user', 'file_path',
+                  'external_file_path', 'extracted_text', )

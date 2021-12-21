@@ -1,5 +1,7 @@
 import uuid
 import os
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -35,6 +37,23 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Uploads(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
     file = models.ImageField(upload_to=rename_file_upload, blank=False)
+    timestamp = models.DateTimeField(
+        auto_now_add=True)
 
     def __str__(self):
-        return self.account.email
+        return self.file.name
+
+
+class NewsRecord(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    file_path = models.TextField(blank=False)
+    external_file_path = models.TextField(blank=True)
+    extracted_text = models.TextField(blank=False)
+    timestamp = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return self.file_path

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User, Uploads
+from .models import User, Uploads, NewsRecord
 
 
 class CustomUserAdmin(UserAdmin):
@@ -40,5 +40,19 @@ class UploadsAdmin(admin.ModelAdmin):
     ordering = ('user',)
 
 
+class NewsRecordAdmin(admin.ModelAdmin):
+    model = NewsRecord
+
+    list_display = ('user', 'file_path',
+                    'external_file_path', 'extracted_text', 'timestamp')
+
+    list_filter = ('user',  'file_path', 'timestamp')
+
+    search_fields = ('user',  'file_path', 'timestamp')
+
+    ordering = ('timestamp',)
+
+
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Uploads, UploadsAdmin)
+admin.site.register(NewsRecord, NewsRecordAdmin)

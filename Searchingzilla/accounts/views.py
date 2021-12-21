@@ -1,4 +1,6 @@
 import json
+import environ
+
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -6,8 +8,13 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from accounts.models import User
-from accounts.forms import UserForm, UploadsForm
+from accounts.models import User, NewsRecord
+from accounts.forms import UserForm, UploadsForm, NewsRecordForm
+
+from SearchEngine.model import extract
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Create your views here.
 
@@ -68,12 +75,23 @@ def loginSignup(request):
 def upload(request):
     if request.method == "POST":
         upload = UploadsForm({"user": request.user}, request.FILES)
-
+        filepath = f"{env('IMAGE_BASE_URL')}/media/"
         if upload.is_valid():
-            upload.save()
+            filepath += str(upload.save())
+
+        preprocessed_text = extract(filepath)
+
+        newsrecord_form = NewsRecordForm({
+            'user': User.objects.get(email=request.user),
+            'file_path': filepath,
+            'extracted_text': preprocessed_text
+        })
+
+        if newsrecord_form.is_valid():
+            newsrecord_form.save()
 
         return HttpResponse(json.dumps({
-            "success": True
+            "success": True,
         }))
 
     return render(request, "upload.html")
