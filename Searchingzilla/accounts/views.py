@@ -103,3 +103,19 @@ def accountLogout(request):
         logout(request)
 
     return HttpResponseRedirect(reverse("home"))
+
+
+@login_required
+def search(request):
+    if request.method == "POST":
+        search_query = request.POST.get("searchQuery", None)
+
+        # NewsRecord.objects.filter(title__contains=search_text)
+        results = NewsRecord.objects.filter(
+            extracted_text__contains=search_query).order_by("-timestamp").values_list("file_path")
+
+        return HttpResponse(json.dumps({
+            'results': list(results)
+        }))
+
+    return render(request, "search.html")

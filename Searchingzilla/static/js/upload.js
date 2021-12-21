@@ -29,6 +29,10 @@ dropZone.addEventListener("drop", (e) => {
     if (files.length === 1) {
         if (files[0].size < maxAllowedSize) {
             fileInput.files = files;
+
+            progressContainer.style.display = "none"; // hide the box
+            sharingContainer.style.display = "none";
+
             uploadFile();
         } else {
             showToast("Max file size is 100MB");
@@ -56,10 +60,17 @@ fileInput.addEventListener("change", () => {
         fileInput.value = ""; // reset the input
         return;
     }
+
+    progressContainer.style.display = "none"; // hide the box
+
     uploadFile();
 });
 
 const uploadFile = () => {
+    sharingContainer.style.display = "none";
+    stat.innerText = "uploading";
+    progressPercent.innerText = 0;
+
     console.log("file added uploading");
     files = fileInput.files;
     const formData = new FormData();

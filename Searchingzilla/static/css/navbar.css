@@ -1,9 +1,18 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
 
-* {
-    margin: 20;
-    padding: 20;
+body {
+    font-family: "Montserrat", sans-serif;
+    background: #f6f5f7;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    height: 80vh;
+    margin: -20px 0 50px;
+    margin-top: 0px;
+    overflow: auto;
 }
+
 i {
     margin-right: 10px;
 }
