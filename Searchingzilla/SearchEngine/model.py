@@ -53,7 +53,6 @@ def preprocess_text(text):
 
 
 def extract(image_url):
-    print(image_url)
     img = load_image(image_url)
 
     text = extract_text(img)
