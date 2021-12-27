@@ -1,8 +1,13 @@
 const searchButton = document.getElementById("search-button");
 const resultContainer = document.querySelector(".result-container");
+const loadMoreButton = document.querySelector(".load-more");
 const loader = document.querySelector(".loader");
+const noResults = document.querySelector(".no-results-found");
 
 const fetchURL = "http://localhost:8000/search";
+let results;
+let offset = 0;
+let count = 10;
 
 function searchToggle(obj, evt) {
     var container = $(obj).closest(".search-wrapper");
@@ -39,7 +44,14 @@ searchButton.addEventListener("click", () => {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             console.log("search complete.");
             loader.style.display = "none";
-            displayResult(xhr.responseText);
+
+            results = JSON.parse(xhr.responseText)["results"];
+
+            if (results.length == 0) {
+                noResults.style.display = "block";
+            } else {
+                displayResult();
+            }
         }
     };
 
@@ -47,17 +59,25 @@ searchButton.addEventListener("click", () => {
     xhr.send(formData);
 });
 
-const displayResult = (results) => {
-    results = JSON.parse(results)["results"];
-    for (let i = 0; i < results.length; i++) {
+const displayResult = () => {
+    const end =
+        offset + count < results.length ? offset + count : results.length;
+
+    for (let i = offset; i < end; i++) {
         const imageURL = results[i][0];
-        console.log(imageURL);
 
         const image = new Image();
         image.src = imageURL;
 
         resultContainer.append(image);
     }
+    offset += count;
 
-    console.log("complete");
+    if (offset < results.length) loadMoreButton.style.display = "block";
+    else loadMoreButton.style.display = "none";
 };
+
+loadMoreButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    displayResult();
+});

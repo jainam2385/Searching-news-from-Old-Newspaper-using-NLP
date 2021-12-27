@@ -1,5 +1,6 @@
 import json
 import environ
+import random
 
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -111,8 +112,11 @@ def search(request):
         search_query = request.POST.get("searchQuery", None)
 
         # NewsRecord.objects.filter(title__contains=search_text)
-        results = NewsRecord.objects.filter(
-            extracted_text__contains=search_query.lower()).order_by("-timestamp").values_list("file_path")
+        results = list(NewsRecord.objects.filter(
+            extracted_text__contains=search_query.lower()).order_by("-timestamp").values_list("file_path", "external_file_path")
+        )
+
+        random.shuffle(results)
 
         return HttpResponse(json.dumps({
             'results': list(results)

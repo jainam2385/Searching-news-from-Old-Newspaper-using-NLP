@@ -38,6 +38,7 @@
     outline: none;
     font-size: 16px;
     font-weight: 400;
+    font-family: "Montserrat", sans-serif;
     line-height: 20px;
     color: #fff;
     transform: translate(0, 60px);
@@ -151,9 +152,9 @@
     margin-right: auto;
     padding: 3%;
     object-fit: contain;
-    width: 100%;
     height: auto;
-    max-width: 100%;
+    padding: 20px;
+    max-width: 80%;
 }
 
 .loader {
@@ -227,4 +228,65 @@
     100% {
         transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
     }
+}
+
+/* Load More button */
+
+.load-more {
+    display: none;
+}
+
+.no-results-found {
+    display: none;
+}
+
+.button {
+    display: inline-block;
+    text-align: center;
+    transition: background-color 0.25s ease-out, color 0.25s ease-out;
+    vertical-align: middle;
+    border: 1px solid #505858;
+    padding: 8px 12px 8px 12px;
+    font-size: 30px;
+    color: #505858;
+    text-decoration: none;
+    min-width: 200px;
+}
+
+.button:hover,
+.button:focus,
+.button.load-more {
+    background-color: #5161ce;
+    border-color: #5161ce;
+    color: #fff;
+}
+
+.load-more span {
+    animation-name: loading;
+    animation-duration: 1.2s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+    background-color: #5161ce;
+    border-color: #5161ce;
+    color: #fff;
+}
+
+@keyframes loading {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.load-more span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.load-more span:nth-child(3) {
+    animation-delay: 0.4s;
 }
