@@ -65,9 +65,15 @@ const displayResult = () => {
 
     for (let i = offset; i < end; i++) {
         const imageURL = results[i][0];
+        const externalImageURL = String(results[i][1]);
 
         const image = new Image();
         image.src = imageURL;
+
+        image.addEventListener("error", function (event) {
+            event.target.src = externalImageURL;
+            event.onerror = null;
+        });
 
         resultContainer.append(image);
     }
