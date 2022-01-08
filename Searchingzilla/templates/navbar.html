@@ -13,6 +13,13 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'search' %}"><i class="far fa-clone"></i>Search</a>
             </li>
+
+            {% if user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'unapprovedPost' %}"><i class="far fa-clone"></i>Approve</a>
+            </li>
+            {% endif %}
+
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'logout' %}"><i class="far fa-address-book"></i>Logout</a>
             </li>

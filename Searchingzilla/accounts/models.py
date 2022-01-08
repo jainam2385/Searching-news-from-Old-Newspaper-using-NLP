@@ -39,6 +39,7 @@ class Uploads(models.Model):
     file = models.ImageField(upload_to=rename_file_upload, blank=False)
     timestamp = models.DateTimeField(
         auto_now_add=True)
+    approved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.file.name

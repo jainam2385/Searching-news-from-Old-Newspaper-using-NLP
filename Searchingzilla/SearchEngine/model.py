@@ -9,9 +9,9 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 
-nltk.download("popular")
-nltk.download("stopwords")
-nltk.download("wordnet")
+# nltk.download("popular")
+# nltk.download("stopwords")
+# nltk.download("wordnet")
 
 
 def load_image(image_url):

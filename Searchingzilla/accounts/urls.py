@@ -22,5 +22,8 @@ urlpatterns = [
     path("loginSignup", loginSignup, name="loginSignup"),
     path("upload", upload, name="upload"),
     path("logout", accountLogout, name="logout"),
-    path("search", search, name="search")
+    path("search", search, name="search"),
+    path("approve", listUnapprovedPost, name="unapprovedPost"),
+    path("approvePost", approvePost, name="approvePost"),
+    path("rejectPost", rejectPost, name="rejectPost")
 ]

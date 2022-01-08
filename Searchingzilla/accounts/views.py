@@ -8,8 +8,10 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
-from accounts.models import User, NewsRecord
+
+from accounts.models import User, Uploads, NewsRecord
 from accounts.forms import UserForm, UploadsForm, NewsRecordForm
 
 from SearchEngine.model import extract
@@ -36,9 +38,11 @@ def loginSignup(request):
 
         # Register user
         if name != None:
+
             user_form = UserForm(request.POST)
 
             if user_form.is_valid():
+                print(user_form)
                 user = user_form.save()
 
                 user.set_password(user.password)
@@ -52,16 +56,20 @@ def loginSignup(request):
 
                 return HttpResponseRedirect(reverse("home"))
 
-            error = "User with this Email address already exists." \
-                if "User with this Email address already exists." in str(user_form.errors) \
-                else ""
+            error = ""
+            if "User with this Email address already exists." in str(user_form.errors):
+                error = "User with this Email address already exists."
+            elif "Password invalid" in str(user_form.errors):
+                error = "Password invalid"
 
         # Login user
         else:
             email = request.POST.get("email", None)
             password = request.POST.get("password", None)
 
-            user = authenticate(username=email, password=password)
+            user = authenticate(email=email, password=password)
+
+            print(user)
 
             if user:
                 login(request, user)
@@ -80,22 +88,77 @@ def upload(request):
         if upload.is_valid():
             filepath += str(upload.save())
 
-        preprocessed_text = extract(filepath)
+        if (request.user.is_staff):
+            print(filepath.split("/")[-1])
+            post = Uploads.objects.get(
+                file="images/" + filepath.split("/")[-1])
 
-        newsrecord_form = NewsRecordForm({
-            'user': User.objects.get(email=request.user),
-            'file_path': filepath,
-            'extracted_text': preprocessed_text
-        })
+            preprocessed_text = extract(filepath)
 
-        if newsrecord_form.is_valid():
-            newsrecord_form.save()
+            newsrecord_form = NewsRecordForm({
+                'user': User.objects.get(email=request.user),
+                'file_path': filepath,
+                'extracted_text': preprocessed_text,
+            })
+
+            if newsrecord_form.is_valid():
+                newsrecord_form.save()
+
+            post.delete()
 
         return HttpResponse(json.dumps({
             "success": True,
         }))
 
     return render(request, "upload.html")
+
+
+@staff_member_required
+def listUnapprovedPost(request):
+    if request.method == "GET":
+        print(Uploads.objects.filter(approved=False))
+        return render(request, "approvePost.html", {"posts": list(Uploads.objects.filter(approved=False))})
+
+
+@staff_member_required
+def approvePost(request):
+    if request.method == "POST":
+        upload_id = request.POST.get("id", None)
+
+        post = Uploads.objects.get(id=upload_id)
+
+        filepath = f"{env('IMAGE_BASE_URL')}/media/"
+        filepath += str(post)
+
+        preprocessed_text = extract(filepath)
+
+        newsrecord_form = NewsRecordForm({
+            'user': post.user,
+            'file_path': filepath,
+            'extracted_text': preprocessed_text,
+        })
+
+        if newsrecord_form.is_valid():
+            newsrecord_form.save()
+
+        post.delete()
+
+        return HttpResponse(json.dumps({
+            "success": True,
+        }))
+
+
+def rejectPost(request):
+    if request.method == "POST":
+        upload_id = request.POST.get("id", None)
+
+        post = Uploads.objects.get(id=upload_id)
+
+        post.delete()
+
+        return HttpResponse(json.dumps({
+            "success": True,
+        }))
 
 
 @login_required
@@ -111,9 +174,12 @@ def search(request):
     if request.method == "POST":
         search_query = request.POST.get("searchQuery", None)
 
-        # NewsRecord.objects.filter(title__contains=search_text)
-        results = list(NewsRecord.objects.filter(
-            extracted_text__contains=search_query.lower()).order_by("-timestamp").values_list("file_path", "external_file_path")
+        results = list(
+            NewsRecord.objects.filter(
+                extracted_text__contains=search_query.lower(),
+            )
+            .order_by("-timestamp")
+            .values_list("file_path", "external_file_path")
         )
 
         random.shuffle(results)
