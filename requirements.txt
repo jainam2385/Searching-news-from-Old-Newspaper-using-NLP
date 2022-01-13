@@ -8,7 +8,7 @@ joblib==1.1.0
 nltk==3.6.5
 numpy==1.21.5
 opencv-python==4.5.4.60
-Pillow==8.4.0
+Pillow==9.0.0
 pycodestyle==2.8.0
 pytesseract==0.3.8
 regex==2021.11.10
