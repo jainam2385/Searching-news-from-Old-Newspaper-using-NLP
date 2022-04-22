@@ -84,12 +84,15 @@ def loginSignup(request):
 def upload(request):
     if request.method == "POST":
         upload = UploadsForm({"user": request.user}, request.FILES)
+        print(upload)
         filepath = f"{env('IMAGE_BASE_URL')}/media/"
         if upload.is_valid():
             filepath += str(upload.save())
 
+        if upload.is_valid():
+            upload.save()
+
         if (request.user.is_staff):
-            print(filepath.split("/")[-1])
             post = Uploads.objects.get(
                 file="images/" + filepath.split("/")[-1])
 
@@ -120,10 +123,12 @@ def listUnapprovedPost(request):
         return render(request, "approvePost.html", {"posts": list(Uploads.objects.filter(approved=False))})
 
 
-@staff_member_required
+# @staff_member_required
 def approvePost(request):
+
     if request.method == "POST":
         upload_id = request.POST.get("id", None)
+        print(upload_id)
 
         post = Uploads.objects.get(id=upload_id)
 
@@ -141,6 +146,7 @@ def approvePost(request):
         if newsrecord_form.is_valid():
             newsrecord_form.save()
 
+        print("deleting...")
         post.delete()
 
         return HttpResponse(json.dumps({
@@ -153,6 +159,7 @@ def rejectPost(request):
         upload_id = request.POST.get("id", None)
 
         post = Uploads.objects.get(id=upload_id)
+        print("deleting...")
 
         post.delete()
 

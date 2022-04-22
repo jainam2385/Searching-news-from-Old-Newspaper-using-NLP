@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.decorators.csrf import csrf_exempt
 from accounts.views import *
+
 
 urlpatterns = [
     path("", home, name="home"),
@@ -24,6 +26,6 @@ urlpatterns = [
     path("logout", accountLogout, name="logout"),
     path("search", search, name="search"),
     path("approve", listUnapprovedPost, name="unapprovedPost"),
-    path("approvePost", approvePost, name="approvePost"),
+    path("approvePost", csrf_exempt(approvePost), name="approvePost"),
     path("rejectPost", rejectPost, name="rejectPost")
 ]
