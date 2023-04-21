@@ -12,7 +12,7 @@ Pillow==9.0.1
 pycodestyle==2.8.0
 pytesseract==0.3.8
 regex==2021.11.10
-sqlparse==0.4.2
+sqlparse==0.4.4
 toml==0.10.2
 tqdm==4.62.3
 tzdata==2021.5
